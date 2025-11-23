@@ -1,17 +1,17 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-100 leading-tight">
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6 text-gray-900">
+            <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
+                <div class="p-6 text-gray-100">
                     <h3 class="text-2xl font-bold mb-2">Welcome back, {{ auth()->user()->name }}! 👋</h3>
-                    <p class="text-gray-600">You're logged in as
-                        <span class="font-semibold text-purple-600">
+                    <p class="text-gray-400">You're logged in as
+                        <span class="font-semibold text-purple-400">
                             {{ auth()->user()->roles->first()->name ?? 'user' }}
                         </span>
                     </p>
@@ -75,9 +75,9 @@
 
             <!-- Recent Activity -->
             @if(auth()->user()->screenshots()->exists())
-                <div class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="mt-8 bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4">Recent Screenshots</h3>
+                        <h3 class="text-lg font-bold text-gray-100 mb-4">Recent Screenshots</h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                             @foreach(auth()->user()->screenshots()->latest()->take(4)->get() as $screenshot)
                                 <div class="relative group">

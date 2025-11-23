@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-semibold text-xl text-gray-100 leading-tight">
                 {{ __('My Screenshots') }}
             </h2>
             <a href="{{ route('visualizer.index') }}"
-               class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+               class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
                 🎨 Create New Visualization
             </a>
         </div>
@@ -88,19 +88,19 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if($screenshots->isEmpty())
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-12 text-center">
+                <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-12 text-center">
                     <div class="text-6xl mb-4">📸</div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-2">No screenshots yet</h3>
-                    <p class="text-gray-600 mb-6">Start creating amazing audio visualizations and capture your favorite moments!</p>
+                    <h3 class="text-2xl font-bold text-gray-100 mb-2">No screenshots yet</h3>
+                    <p class="text-gray-400 mb-6">Start creating amazing audio visualizations and capture your favorite moments!</p>
                     <a href="{{ route('visualizer.index') }}"
-                       class="inline-block bg-purple-500 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg">
+                       class="inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg">
                         Get Started →
                     </a>
                 </div>
             @else
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($screenshots as $screenshot)
-                        <div class="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
+                        <div class="bg-gray-800 overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300 border border-gray-700">
                             <div class="relative group">
                                 <img src="{{ Storage::url($screenshot->path) }}"
                                      alt="Screenshot"
@@ -121,7 +121,7 @@
                             </div>
                             <div class="p-4">
                                 <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm text-gray-600">
+                                    <span class="text-sm text-gray-400">
                                         {{ $screenshot->created_at->diffForHumans() }}
                                     </span>
                                     @if($screenshot->sent_at)
@@ -130,7 +130,7 @@
                                             <span class="text-xs opacity-75">{{ $screenshot->sent_at->diffForHumans() }}</span>
                                         </span>
                                     @else
-                                        <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                                        <span class="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded">
                                             Not sent
                                         </span>
                                     @endif
@@ -138,7 +138,7 @@
                                 <p class="text-xs text-gray-500 truncate">
                                     {{ $screenshot->filename }}
                                 </p>
-                                <p class="text-xs text-gray-400 mt-1">
+                                <p class="text-xs text-gray-600 mt-1">
                                     Created: {{ $screenshot->created_at->format('M d, Y g:i A') }}
                                 </p>
                             </div>
