@@ -21,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Captura y envío de screenshot
     Route::post('/screenshot/capture', [ScreenshotController::class, 'capture'])->name('screenshot.capture');
+    Route::post('/screenshot/{screenshot}/resend', [ScreenshotController::class, 'resend'])->name('screenshot.resend');
     Route::get('/screenshots', [ScreenshotController::class, 'index'])->name('screenshots.index');
 });
 

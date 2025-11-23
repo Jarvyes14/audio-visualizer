@@ -23,10 +23,11 @@
         }
 
         .controls {
+            width: 25%;
             position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 0%;
+            left: 100%;
+            transform: translateX(-79%) translateY(20%) scale(0.5);
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -223,8 +224,8 @@
             <div class="all-sliders">
                 <div class="slider-container">
                     <label for="sensitivity">Sensibilidad:</label>
-                    <input type="range" id="sensitivity" min="0" max="1" value="0.5" step="0.01">
-                    <span id="sensitivityValue" style="color: white; min-width: 40px;">0.50</span>
+                    <input type="range" id="sensitivity" min="1" max="1000" value="500" step="1">
+                    <span id="sensitivityValue" style="color: white; min-width: 40px;">500</span>
                 </div>
                 <div class="slider-container">
                     <label for="maxDisplacement">Máx. Deformación:</label>
@@ -235,13 +236,13 @@
             <div class="all-sliders">
                 <div class="slider-container">
                     <label for="speed">Velocidad:</label>
-                    <input type="range" id="speed" min="0.1" max="5" value="1" step="0.1">
-                    <span id="speedValue" style="color: white; min-width: 40px;">1.0</span>
+                    <input type="range" id="speed" min="1" max="50" value="1" step="1">
+                    <span id="speedValue" style="color: white; min-width: 40px;">1</span>
                 </div>
                 <div class="slider-container">
                     <label for="amplitude">Tamaño Esfera:</label>
-                    <input type="range" id="amplitude" min="100" max="500" value="300" step="10">
-                    <span id="amplitudeValue" style="color: white; min-width: 40px;">300</span>
+                    <input type="range" id="amplitude" min="40" max="300" value="100" step="1">
+                    <span id="amplitudeValue" style="color: white; min-width: 40px;">100</span>
                 </div>
             </div>
         </div>
@@ -629,11 +630,11 @@
 
                 let intensity = 0;
                 if (analyser && dataArray && typeof p.audioIndex === 'number' && dataArray.length > p.audioIndex) {
-                    intensity = dataArray[p.audioIndex] / 255;
+                    intensity = dataArray[p.audioIndex] / 765;
                 }
 
                 const color = getColor(colorPos, colorOffset, intensity);
-                const size = 2.5 * p.scale;
+                const size = 1.5 * p.scale;
 
                 const innerAlpha = 0.5 + 0.5 * intensity;
                 const midAlpha = 0.25 + 0.55 * intensity;

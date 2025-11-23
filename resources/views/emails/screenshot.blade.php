@@ -97,7 +97,11 @@
         </div>
 
         <div class="message">
-            We're excited to share your latest audio visualizer screenshot! Your creative sphere has been captured and is attached to this email.
+            @if($screenshot->sent_at && $screenshot->sent_at->diffInMinutes(now()) < 2)
+                Here's your audio visualizer screenshot as requested!
+            @else
+                We're excited to share your latest audio visualizer screenshot! Your creative sphere has been captured and is attached to this email.
+            @endif
         </div>
 
         <div class="info-box">

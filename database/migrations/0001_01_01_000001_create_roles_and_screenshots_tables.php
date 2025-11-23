@@ -26,10 +26,12 @@ return new class extends Migration
             $table->unique(['user_id', 'role_id']);
         });
 
-        // Agregar campos a users
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_active')->default(true)->after('email');
-        });
+        // Agregar campos a users (solo si no existen)
+        if (!Schema::hasColumn('users', 'is_active')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->boolean('is_active')->default(true)->after('email');
+            });
+        }
 
         // Tabla para guardar screenshots
         Schema::create('screenshots', function (Blueprint $table) {
@@ -46,9 +48,11 @@ return new class extends Migration
     {
         Schema::dropIfExists('screenshots');
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('is_active');
-        });
+        if (Schema::hasColumn('users', 'is_active')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('is_active');
+            });
+        }
 
         Schema::dropIfExists('role_user');
         Schema::dropIfExists('roles');
