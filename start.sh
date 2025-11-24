@@ -46,7 +46,7 @@ php artisan route:cache
 php artisan view:cache
 
 echo "✨ Starting server on port $PORT..."
-php -S 0.0.0.0:$PORT -t public
+php -S 0.0.0.0:$PORT -t public router.php
 
 echo "Installing vite and building"
 npm install && npm run build
