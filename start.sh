@@ -9,15 +9,22 @@ mkdir -p storage/framework/sessions
 mkdir -p storage/framework/views
 mkdir -p storage/logs
 mkdir -p bootstrap/cache
+mkdir -p public/build
 
 # Dar permisos
 chmod -R 775 storage bootstrap/cache
+
+# Verificar que los assets existen
+if [ ! -d "public/build" ]; then
+    echo "⚠️  Build directory not found, creating..."
+    npm run build
+fi
 
 # Ejecutar migraciones
 echo "📦 Running migrations..."
 php artisan migrate --force
 
-# Ejecutar seeders (solo si no existen usuarios)
+# Ejecutar seeders
 echo "🌱 Seeding database..."
 php artisan db:seed --force 2>/dev/null || echo "Seeders already run"
 
