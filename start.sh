@@ -39,11 +39,6 @@ php artisan cache:clear
 php artisan view:clear
 php artisan route:clear
 
-echo "📁 Creating screenshots directory..."
-mkdir -p public/screenshots
-chmod -R 775 public/screenshots
-ls -la public/ | grep screenshots
-
 # Cachear para producción
 echo "📝 Caching configuration..."
 php artisan config:cache
