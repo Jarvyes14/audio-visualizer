@@ -37,18 +37,10 @@ class ScreenshotMail extends Mailable
 
     public function attachments(): array
     {
-        // Obtener la ruta completa del archivo
-        $fullPath = storage_path('app/public/' . $this->screenshot->path);
-
-        // Verificar que el archivo existe
-        if (!file_exists($fullPath)) {
-            \Log::error('Screenshot file not found: ' . $fullPath);
-            return [];
-        }
+        $imageData = base64_decode($this->screenshot->image_data);
 
         return [
-            Attachment::fromPath($fullPath)
-                ->as($this->screenshot->filename)
+            Attachment::fromData(fn() => $imageData, $this->screenshot->filename)
                 ->withMime('image/png'),
         ];
     }
