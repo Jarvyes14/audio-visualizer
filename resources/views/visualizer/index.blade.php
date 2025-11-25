@@ -285,6 +285,18 @@
         let maxDisplacement = 0.5;
         let maxAudioIndex = 0;
         let displacementFactor = 2.0;
+        let waveshaper;   // ← junto a audioContext, analyser, etc.
+
+        function makeDistortionCurve(amount = 50) {
+            const samples = 44100;
+            const curve = new Float32Array(samples);
+            const deg = Math.PI / 180;
+            for (let i = 0; i < samples; i++) {
+                const x = (i * 2) / samples - 1;               // -1 … 1
+                curve[i] = ((3 + amount) * x * 20 * deg) / (Math.PI + amount * Math.abs(x));
+            }
+            return curve;
+        }
 
         // Función para mostrar notificación
         function showNotification(message, type = 'success') {
@@ -471,40 +483,27 @@
         }
 
         async function initAudio(stream, sourceName) {
-            if (audioContext) {
-                audioContext.close();
-            }
+            if (audioContext) audioContext.close();
 
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioContext.createAnalyser();
-            source = audioContext.createMediaStreamSource(stream);
+            analyser     = audioContext.createAnalyser();
+            waveshaper   = audioContext.createWaveShaper();   // ← nuevo
+            source       = audioContext.createMediaStreamSource(stream);
+
+            waveshaper.curve   = makeDistortionCurve(100);    // 0-100 : cantidad de distorsión
+            waveshaper.oversample = '4x';                     // suaviza aliasing
 
             analyser.fftSize = 256;
             analyser.smoothingTimeConstant = 1.0 - sensitivity;
 
             bufferLength = analyser.frequencyBinCount;
-            dataArray = new Uint8Array(bufferLength);
+            dataArray    = new Uint8Array(bufferLength);
+            maxAudioIndex= bufferLength;
 
-            maxAudioIndex = bufferLength;
-
-            source.connect(analyser);
-
-            micBtn.disabled = true;
-            systemBtn.disabled = true;
-            stopBtn.disabled = false;
-            screenshotBtn.disabled = false;
-
-            if (sourceName === 'micrófono') {
-                micBtn.classList.add('active');
-            } else {
-                systemBtn.classList.add('active');
-            }
-
-            status.textContent = `🎵 Capturando ${sourceName}...`;
-            info.textContent = '';
-
-            initParticles();
-            visualize();
+            // conexión: fuente → waveshaper → analizador → altavoces
+            source.connect(waveshaper);
+            waveshaper.connect(analyser);
+            analyser.connect(audioContext.destination);   // ← se escucha distorsionado
         }
 
         micBtn.addEventListener('click', async () => {
