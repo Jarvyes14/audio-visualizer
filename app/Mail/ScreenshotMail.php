@@ -37,6 +37,11 @@ class ScreenshotMail extends Mailable
 
     public function attachments(): array
     {
+
+        \Log::info('Full path: '.$this->screenshot->image_data);
+        \Log::info('Existe: '.file_exists($this->screenshot->image_data));
+        \Log::info('Tamaño: '.filesize($this->screenshot->image_data));
+
         $imageData = base64_decode($this->screenshot->image_data);
 
         return [
