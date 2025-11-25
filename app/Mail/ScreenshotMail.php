@@ -10,6 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ScreenshotMail extends Mailable
@@ -38,9 +39,9 @@ class ScreenshotMail extends Mailable
     public function attachments(): array
     {
 
-        \Log::info('Full path: '.$this->screenshot->image_data);
-        \Log::info('Existe: '.file_exists($this->screenshot->image_data));
-        \Log::info('Tamaño: '.filesize($this->screenshot->image_data));
+        Log::info('Full path: '.$this->screenshot->image_data);
+        Log::info('Existe: '.file_exists($this->screenshot->image_data));
+        Log::info('Tamaño: '.filesize($this->screenshot->image_data));
 
         $imageData = base64_decode($this->screenshot->image_data);
 
