@@ -53,6 +53,7 @@ class ScreenshotController extends Controller
                 'user_id' => auth()->id(),
                 'filename' => $filename,
                 'path' => $path,
+                'image_data' => base64_encode($decodedImage),
             ]);
 
             // Enviar email
