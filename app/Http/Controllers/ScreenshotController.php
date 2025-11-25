@@ -3,77 +3,75 @@
 namespace App\Http\Controllers;
 
 use App\Models\Screenshot;
-use App\Mail\ScreenshotMail;
+use App\Jobs\SendScreenshotEmail;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class ScreenshotController extends Controller
 {
     public function capture(Request $request)
     {
-        $request->validate([
-            'image' => 'required|string', // Base64 string
-        ]);
+        Log::info('Screenshot capture started', ['user_id' => auth()->id()]);
 
         try {
-            // Decodificar la imagen base64
-            $imageData = $request->input('image');
+            $request->validate([
+                'image' => 'required|string',
+            ]);
 
-            // Remover el prefijo data:image/png;base64,
+            $imageData = $request->input('image');
             $imageData = str_replace('data:image/png;base64,', '', $imageData);
             $imageData = str_replace(' ', '+', $imageData);
             $decodedImage = base64_decode($imageData);
 
-            // Validar que se decodificó correctamente
             if (!$decodedImage) {
                 throw new \Exception('Failed to decode image data');
             }
 
-            // Generar nombre único para el archivo
             $filename = 'screenshot_' . auth()->id() . '_' . time() . '.png';
-            $path = 'screenshots/' . $filename;
+            $publicPath = 'screenshots/' . $filename;
+            $fullPath = public_path($publicPath);
 
-            // Guardar en storage/app/public/screenshots/
-            $saved = Storage::disk('public')->put($path, $decodedImage);
-
-            if (!$saved) {
-                throw new \Exception('Failed to save screenshot file');
+            if (!file_exists(public_path('screenshots'))) {
+                mkdir(public_path('screenshots'), 0755, true);
             }
 
-            // Verificar que el archivo se guardó correctamente
-            $fullPath = storage_path('app/public/' . $path);
-            if (!file_exists($fullPath)) {
-                throw new \Exception('Screenshot file was not saved correctly');
+            $saved = file_put_contents($fullPath, $decodedImage);
+
+            if ($saved === false) {
+                throw new \Exception('Failed to save file');
             }
 
-            // Guardar registro en base de datos
             $screenshot = Screenshot::create([
                 'user_id' => auth()->id(),
                 'filename' => $filename,
-                'path' => $path,
+                'path' => $publicPath,
             ]);
 
-            // Enviar email
-            $user = auth()->user();
-            Mail::to($user->email)->send(new ScreenshotMail($user, $screenshot));
+            Log::info('Screenshot saved, queuing email', ['screenshot_id' => $screenshot->id]);
 
-            // Actualizar timestamp de envío
-            $screenshot->update(['sent_at' => now()]);
+            // Enviar email de forma ASÍNCRONA (no bloquea la respuesta)
+            SendScreenshotEmail::dispatch(auth()->user(), $screenshot);
 
+            // Responder INMEDIATAMENTE
             return response()->json([
                 'success' => true,
-                'message' => 'Screenshot captured and sent to your email!',
-                'screenshot' => $screenshot
+                'message' => 'Screenshot captured! Email will be sent shortly.',
+                'screenshot' => [
+                    'id' => $screenshot->id,
+                    'url' => asset($publicPath),
+                    'filename' => $filename
+                ]
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Screenshot capture error: ' . $e->getMessage());
+            Log::error('Screenshot capture error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error capturing screenshot: ' . $e->getMessage()
+                'message' => 'Error: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -89,7 +87,6 @@ class ScreenshotController extends Controller
 
     public function resend(Screenshot $screenshot)
     {
-        // Verificar que el screenshot pertenece al usuario actual
         if ($screenshot->user_id !== auth()->id()) {
             return response()->json([
                 'success' => false,
@@ -98,23 +95,17 @@ class ScreenshotController extends Controller
         }
 
         try {
-            $user = auth()->user();
-
-            // Enviar email
-            Mail::to($user->email)->send(new ScreenshotMail($user, $screenshot));
-
-            // Actualizar timestamp de envío
-            $screenshot->update(['sent_at' => now()]);
+            SendScreenshotEmail::dispatch(auth()->user(), $screenshot);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Screenshot sent successfully to your email!',
+                'message' => 'Email will be sent shortly!',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error sending email: ' . $e->getMessage()
+                'message' => 'Error: ' . $e->getMessage()
             ], 500);
         }
     }

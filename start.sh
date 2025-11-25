@@ -45,6 +45,9 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
+echo "🔄 Starting queue worker..."
+php artisan queue:work database --sleep=3 --tries=3 --timeout=120 &
+
 echo "✨ Starting server on port $PORT..."
 php -S 0.0.0.0:$PORT -t public router.php
 
