@@ -487,23 +487,53 @@
 
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             analyser     = audioContext.createAnalyser();
-            waveshaper   = audioContext.createWaveShaper();   // ← nuevo
             source       = audioContext.createMediaStreamSource(stream);
 
-            waveshaper.curve   = makeDistortionCurve(100);    // 0-100 : cantidad de distorsión
-            waveshaper.oversample = '4x';                     // suaviza aliasing
+            /* ---------- NODOS DE ECO ---------- */
+            const delay       = audioContext.createDelay(1);   // 1 s max
+            const feedbackGain= audioContext.createGain();
+            const dryGain     = audioContext.createGain();     // señal original
+            const wetGain     = audioContext.createGain();     // señal con eco
+            const mix         = audioContext.createGain();     // salida final
 
+            delay.delayTime.value     = 0.25;                  // 250 ms de eco
+            feedbackGain.gain.value   = 0.4;                   // 40 % de feedback
+            dryGain.gain.value        = 0.7;                   // 70 % original
+            wetGain.gain.value        = 0.6;                   // 60 % eco (total >100 % es válido)
+
+            /* ---------- CADENA ---------- */
+            source.connect(dryGain);      // ruta seca
+            source.connect(delay);        // ruta húmeda
+            delay.connect(feedbackGain);
+            feedbackGain.connect(delay);  // feedback
+            feedbackGain.connect(wetGain);
+
+            dryGain.connect(mix);
+            wetGain.connect(mix);
+            mix.connect(analyser);        // para el visualizador
+            mix.connect(audioContext.destination); // altavoces
+
+            /* ---------- ANALIZADOR (igual que antes) ---------- */
             analyser.fftSize = 256;
             analyser.smoothingTimeConstant = 1.0 - sensitivity;
-
             bufferLength = analyser.frequencyBinCount;
             dataArray    = new Uint8Array(bufferLength);
             maxAudioIndex= bufferLength;
 
-            // conexión: fuente → waveshaper → analizador → altavoces
-            source.connect(waveshaper);
-            waveshaper.connect(analyser);
-            analyser.connect(audioContext.destination);   // ← se escucha distorsionado
+            /* ---------- UI ---------- */
+            micBtn.disabled   = true;
+            systemBtn.disabled= true;
+            stopBtn.disabled  = false;
+            screenshotBtn.disabled = false;
+
+            if (sourceName === 'micrófono') micBtn.classList.add('active');
+            else systemBtn.classList.add('active');
+
+            status.textContent = `🎵 Capturando ${sourceName}...`;
+            info.textContent   = '';
+
+            initParticles();
+            visualize();
         }
 
         micBtn.addEventListener('click', async () => {
