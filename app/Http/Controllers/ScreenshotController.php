@@ -53,12 +53,12 @@ class ScreenshotController extends Controller
                 'user_id' => auth()->id(),
                 'filename' => $filename,
                 'path' => $path,
-                'image_data' => base64_encode($decodedImage),
+                'image_data' => $imageData,
             ]);
 
             // Enviar email
             $user = auth()->user();
-            Mail::to($user->email)->send(new ScreenshotMail($user, $screenshot));
+            Mail::to($user->email)->send(new ScreenshotMail($user, $screenshot, $decodedImage));
 
             // Actualizar timestamp de envío
             $screenshot->update(['sent_at' => now()]);

@@ -19,7 +19,8 @@ class ScreenshotMail extends Mailable
 
     public function __construct(
         public User $user,
-        public Screenshot $screenshot
+        public Screenshot $screenshot,
+        public string $imageBinary
     ) {}
 
     public function envelope(): Envelope
@@ -39,14 +40,10 @@ class ScreenshotMail extends Mailable
     public function attachments(): array
     {
 
-        Log::info('Full path: '.$this->screenshot->image_data);
-        Log::info('Existe: '.file_exists($this->screenshot->image_data));
-        Log::info('Tamaño: '.filesize($this->screenshot->image_data));
-
         $imageData = base64_decode($this->screenshot->image_data);
 
         return [
-            Attachment::fromData(fn() => $imageData, $this->screenshot->filename)
+            Attachment::fromData(fn() => $this->imageBinary, $this->screenshot->filename)
                 ->withMime('image/png'),
         ];
     }
