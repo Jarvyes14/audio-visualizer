@@ -314,14 +314,14 @@ aura-experience/
 
 ## 🔐 Roles y Permisos
 
-| Característica | Admin | Staff | Client |
-|----------------|-------|-------|--------|
-| Usar visualizador | ✅ | ✅ | ✅ |
-| Capturar screenshots | ✅ | ✅ | ✅ |
-| Ver galería propia | ✅ | ✅ | ✅ |
-| Gestionar usuarios | ✅ | ❌ | ❌ |
-| Asignar roles | ✅ | ❌ | ❌ |
-| Acceder panel admin | ✅ | ❌ | ❌ |
+| Característica | Admin | Client |
+|----------------|---|---|
+| Usar visualizador | ✅ | ✅ |
+| Capturar screenshots | ✅ | ✅ |
+| Ver galería propia | ✅ | ✅ |
+| Gestionar usuarios | ✅ | ❌ |
+| Asignar roles | ✅ | ❌ |
+| Acceder panel admin | ✅ | ❌ |
 
 ---
 
@@ -459,18 +459,6 @@ chore: maintenance tasks
 
 ---
 
-## 🤝 Contribución
-
-Las contribuciones son bienvenidas. Por favor:
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'feat: add amazing feature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
----
-
 ## 📄 Licencia
 
 Este proyecto está bajo la licencia MIT. Ver el archivo `LICENSE` para más detalles.
@@ -481,7 +469,7 @@ Este proyecto está bajo la licencia MIT. Ver el archivo `LICENSE` para más det
 
 **Javier Barceló Santos**
 - Website: [javierbarcelosantos.dev](https://javierbarcelosantos.dev)
-- Email: [aura.experience.magic@gmail.com](mailto:aura.experience.magic@gmail.com)
+- Email: [javierbarcelosantos@gmail.com](mailto:javierbarcelosantos@gmail.com)
 
 ---
 
@@ -492,25 +480,6 @@ Este proyecto está bajo la licencia MIT. Ver el archivo `LICENSE` para más det
 - [Railway](https://railway.app) - Hosting
 - [WebAudio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) - Audio processing
 - [Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) - 3D rendering
-
----
-
-## 📸 Screenshots
-
-### Página de Bienvenida
-![Welcome](docs/screenshots/welcome.png)
-
-### Visualizador 3D
-![Visualizer](docs/screenshots/visualizer.png)
-
-### Galería de Screenshots
-![Gallery](docs/screenshots/gallery.png)
-
-### Panel de Administración
-![Admin Panel](docs/screenshots/admin.png)
-
-### Email Recibido
-![Email](docs/screenshots/email.png)
 
 ---
 
